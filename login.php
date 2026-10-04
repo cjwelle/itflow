@@ -101,7 +101,12 @@ $config_whitelabel_enabled       = intval($row['config_whitelabel_enabled']);
 $config_login_key_required = $row['config_login_key_required'];
 $config_login_key_secret   = $row['config_login_key_secret'];
 
-$azure_client_id = $row['config_azure_client_id'] ?? null;
+// Prefer the production Secret-backed OAuth client ID when it is available.
+// The database setting remains the fallback for existing installations.
+$env_azure_client_id = getenv('ITFLOW_AZURE_CLIENT_ID');
+$azure_client_id = ($env_azure_client_id !== false && $env_azure_client_id !== '')
+    ? trim($env_azure_client_id)
+    : ($row['config_azure_client_id'] ?? null);
 
 $response         = null;
 $token_field      = null;
