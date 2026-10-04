@@ -18,8 +18,18 @@ $session_user_agent = escapeSql($_SERVER['HTTP_USER_AGENT']);
 $sql_settings = mysqli_query($mysqli, "SELECT config_azure_client_id, config_azure_client_secret FROM settings WHERE company_id = 1");
 $settings = mysqli_fetch_assoc($sql_settings);
 
-$client_id = $settings['config_azure_client_id'];
-$client_secret = $settings['config_azure_client_secret'];
+// Production deployments may supply these from a Kubernetes Secret populated
+// from Vault. Keep the database values as a backwards-compatible fallback
+// for existing installs.
+$env_client_id = getenv('ITFLOW_AZURE_CLIENT_ID');
+$env_client_secret = getenv('ITFLOW_AZURE_CLIENT_SECRET');
+
+$client_id = ($env_client_id !== false && $env_client_id !== '')
+    ? trim($env_client_id)
+    : $settings['config_azure_client_id'];
+$client_secret = ($env_client_secret !== false && $env_client_secret !== '')
+    ? $env_client_secret
+    : $settings['config_azure_client_secret'];
 
 $redirect_uri = "https://$config_base_url/client/login_microsoft.php";
 
