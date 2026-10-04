@@ -30,6 +30,21 @@ client portal without an administrator manually creating a contact first.
 * `justtechs.com` is a reserved staff domain. Its identities are routed to the
   tech backend and are never eligible for customer self-service onboarding or
   customer tenant assignment.
+
+## JustTechs staff roles
+
+ITFlow's existing roles remain the source of authorization. The staff SSO
+provisioning rule is deliberately narrow:
+
+* `cwelle@justtechs.com` is the bootstrap administrator and maps to the
+  existing **Administrator** role.
+* A verified `@justtechs.com` identity that is explicitly approved for staff
+  access maps to the existing non-admin **Technician** role (the JustTechs
+  agent role).
+* No other address, including another `@justtechs.com` address, can receive
+  administrator privileges automatically. Administrator promotion remains an
+  audited action performed by an existing Administrator.
+* Staff identities never create or attach to client portal tenants.
 * Email matching is case-insensitive and each identity maps to exactly one
   ITFlow user/contact. The flow never changes an existing contact's client.
 
